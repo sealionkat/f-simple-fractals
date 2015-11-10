@@ -229,9 +229,10 @@ html, body {
 
 	function genCantorGUI() {
 		var n = prompt('Podaj liczbę zagnieżdżeń');
+		var mod = prompt('Podaj długość (0; 0.5)');
 		clearCanvas();
 		ctx.beginPath();
-		cantor(0, 1, n, 0.1);
+		cantor(0, 1, n, mod);
 		ctx.stroke();
 		
 		updateMinkowskiDim();
