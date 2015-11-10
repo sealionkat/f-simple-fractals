@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+<title>Lol</title>
+<meta charset="utf8" />
+
+<style>
+html, body {
+	background-color: black;
+	
+}
+
+#dCanvas {
+	width: 600px;
+	height: 600px;
+	margin: 0 auto;
+	background-color: white;
+}
+
+#cCanvas {
+	width: 600px;
+	height: 600px;
+}
+</style>
+</head>
+<body>
+<div id="dCanvas">
+	<canvas id="cCanvas" width="600" height="600"></canvas>
+	</div>
+	
+	
+<script>
+var canvas = document.getElementById("cCanvas");
+var ctx = canvas.getContext('2d');
+var height = 600;
+var width = 600;
+
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, height, width);
+
+
+function scaleW(x) {
+	return x * width;
+}
+
+function scaleH(x) {
+	return x * height;
+}
+
+function lineTo(x1, y1, x2, y2) {
+	ctx.moveTo(Math.floor(x1), Math.floor(y1));
+	ctx.lineTo(Math.floor(x2), Math.floor(y2));
+}
+
+function slineTo(x1, y1, x2, y2) {
+	lineTo(scaleW(x1), scaleH(y1), scaleW(x2), scaleH(y2));
+}
+
+function cantor(x, y, n, mod) {
+	if(n == 0) {
+		slineTo(x, 0.5, y, 0.5);
+	}
+	else {
+		var len = (y - x) * mod;
+		
+		cantor(x, x + len, n - 1, mod);
+		cantor(y - len, y, n - 1, mod);
+	}
+}
+
+function carpet(x1, x2, y1, y2, n) {
+	slineTo(x1, y1, x2, y1);
+	slineTo(x1, y2, x2, y2);
+	slineTo(x1, y1, x1, y2);
+	slineTo(x2, y1, x2, y2);
+	
+	if(n > 0) {
+		n = n - 1;
+		
+		var x_len = (x2 - x1) / 3;
+		var y_len = (y2 - y1) / 3;
+		
+		carpet(x1 + x_len * 0, x1 + x_len * 1, y1 + y_len * 0, y1 + y_len * 1, n);
+		carpet(x1 + x_len * 1, x1 + x_len * 2, y1 + y_len * 0, y1 + y_len * 1, n);
+		carpet(x1 + x_len * 2, x1 + x_len * 3, y1 + y_len * 0, y1 + y_len * 1, n);
+		
+		carpet(x1 + x_len * 0, x1 + x_len * 1, y1 + y_len * 1, y1 + y_len * 2, n);
+		carpet(x1 + x_len * 2, x1 + x_len * 3, y1 + y_len * 1, y1 + y_len * 2, n);
+		
+		carpet(x1 + x_len * 0, x1 + x_len * 1, y1 + y_len * 2, y1 + y_len * 3, n);
+		carpet(x1 + x_len * 1, x1 + x_len * 2, y1 + y_len * 2, y1 + y_len * 3, n);
+		carpet(x1 + x_len * 2, x1 + x_len * 3, y1 + y_len * 2, y1 + y_len * 3, n);
+	}
+}
+
+function triangle(x, y, len, n) {
+	var half = len / 2;
+	var h = len * 0.866025;
+	
+	slineTo(x, y, x + len, y);
+	slineTo(x, y, x + half, y - h);
+	slineTo(x + half, y - h, x + len, y);
+	
+	if(n > 0) {
+		n--;
+		
+		triangle(x, y, half, n);
+		triangle(x + half, y, half, n);
+		triangle(x + half / 2, y - h / 2, half, n);
+	}
+}
+
+function toRadians(angle) {
+	return angle * (Math.PI / 180);
+}
+
+function koch(x, y, angle, len, n) {
+	var new_x = x + len * Math.cos(toRadians(angle));
+	var new_y = y + len * Math.sin(toRadians(angle));
+	
+	if(n == 0) {
+		
+		
+		slineTo(x, y, new_x, new_y);
+	}
+	else {
+		n--;
+		
+		var xlen = (new_x - x) / 3;
+		var ylen = (new_y - y) / 3;
+		
+		koch(x, y, angle, len / 3, n);
+		koch(new_x - xlen, new_y - ylen, angle, len / 3, n);
+		
+		koch(x + xlen, y + ylen, angle - 60, len / 3, n);
+		
+		var trix = x + xlen + len / 3 * Math.cos(toRadians(angle - 60));
+		var triy = y + ylen + len / 3 * Math.sin(toRadians(angle - 60));
+		koch(trix, triy, angle + 60, len / 3, n);
+	}
+}
+
+function minkowskiDimension() {
+	var count = 0;
+	var d = ctx.getImageData(0, 0, 600, 600).data;
+	
+	for(var i = 0; i < 600; ++i) {
+		for(var j = 0; j < 600; ++j) {
+			/*if(d[1 + (i * 600 + j) * 4] != 255)
+				console.log(d[1 + (i * 600 + j) * 4]);*/
+			if(d[1 + (i * 600 + j) * 4] != 255) {
+				count++;
+			}
+		}
+	}
+	
+	console.log(count, Math.log(count), Math.log(1/600))
+	console.log(- Math.log(count) / Math.log(1/600));
+}
+
+ctx.beginPath();
+ctx.lineWidth = 1;
+ctx.strokeStyle = 'red';
+ctx.translate(-0.5, -0.5);
+
+//carpet(0, 1, 0, 1, 5);
+//triangle(0, 1, 1, 7);
+//cantor(0, 1, 9, 1/3);
+koch(0, 0.98, 0, 1, 5);
+
+ctx.stroke();
+
+minkowskiDimension();
+
+</script>
+	
+</body>
+</html>
