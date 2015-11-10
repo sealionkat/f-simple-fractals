@@ -106,6 +106,24 @@ html, body {
 			cantor(y - len, y, n - 1, mod);
 		}
 	}
+	
+	function cantor2d(x, y, len, n) {
+		if(n == 0) {
+			slineTo(x, y, x + len, y);
+			slineTo(x, y, x, y + len);
+			slineTo(x + len, y, x + len, y + len);
+			slineTo(x, y + len, x + len, y + len);
+		}
+		else {
+			var nlen = len / 3;
+			n--;
+			
+			cantor2d(x, y, nlen, n);
+			cantor2d(x + 2 * nlen, y, nlen, n);
+			cantor2d(x + 2 * nlen, y + 2 * nlen, nlen, n);
+			cantor2d(x, y + 2 * nlen, nlen, n);
+		}
+	}
 
 	function carpet(x1, x2, y1, y2, n) {
 		slineTo(x1, y1, x2, y1);
@@ -248,9 +266,7 @@ html, body {
 		updateMinkowskiDim();
 	}
 
-
-
-
+	
 	(function init() {
 		$('bCantor').addEventListener('click', cantorGUI, false);
 		$('bGenCantor').addEventListener('click', genCantorGUI, false);
@@ -262,6 +278,10 @@ html, body {
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = 'red';
 		ctx.translate(-0.5, -0.5);
+		
+		ctx.beginPath();
+		cantor2d(0.01, 0.01, 0.98, 4);
+		ctx.stroke();
 	})();
 
 })();
