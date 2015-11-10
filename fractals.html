@@ -44,6 +44,7 @@ html, body {
 		<button type="button" id="bKoch">Krzywa Kocha</button>
 		<button type="button" id="bCantor">Zbiór Cantora</button>
 		<button type="button" id="bGenCantor">Zbiór Cantora uogólniony</button>
+		<button type="button" id="bCantor2d">Zbiór Cantora 2D</button>
 		<button type="button" id="bCarpet">Dywan Sierpińskiego</button>
 		<button type="button" id="bTriangle">Trójkąt Sierpińskiego</button>
 	</fieldset>
@@ -116,7 +117,7 @@ html, body {
 		}
 		else {
 			var nlen = len / 3;
-			n--;
+			--n;
 			
 			cantor2d(x, y, nlen, n);
 			cantor2d(x + 2 * nlen, y, nlen, n);
@@ -244,6 +245,16 @@ html, body {
 		
 		updateMinkowskiDim();
 	}
+	
+	function cantor2dGUI() {
+		var n = prompt('Podaj liczbę zagnieżdżeń');
+		clearCanvas();
+		ctx.beginPath();
+		cantor2d(0.01, 0.01, 0.98, n);
+		ctx.stroke();
+		
+		updateMinkowskiDim();
+	}
 
 	function genCantorGUI() {
 		var n = prompt('Podaj liczbę zagnieżdżeń');
@@ -269,6 +280,7 @@ html, body {
 	
 	(function init() {
 		$('bCantor').addEventListener('click', cantorGUI, false);
+		$('bCantor2d').addEventListener('click', cantor2dGUI, false);
 		$('bGenCantor').addEventListener('click', genCantorGUI, false);
 		$('bCarpet').addEventListener('click', carpetGUI, false);
 		$('bKoch').addEventListener('click', kochGUI, false);
