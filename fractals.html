@@ -21,6 +21,7 @@ html, body {
 #cCanvas {
 	width: 600px;
 	height: 600px;
+	color: white;
 }
 
 #dMenu {
@@ -68,6 +69,7 @@ html, body {
 	var ctx = canvas.getContext('2d');
 	var height = 600;
 	var width = 600;
+	var spMinkowskiDim = $('spMinkowskiDim');
 
 
 
@@ -112,7 +114,7 @@ html, body {
 		slineTo(x2, y1, x2, y2);
 		
 		if(n > 0) {
-			n = n - 1;
+			--n;
 			
 			var x_len = (x2 - x1) / 3;
 			var y_len = (y2 - y1) / 3;
@@ -139,7 +141,7 @@ html, body {
 		slineTo(x + half, y - h, x + len, y);
 		
 		if(n > 0) {
-			n--;
+			--n;
 			
 			triangle(x, y, half, n);
 			triangle(x + half, y, half, n);
@@ -159,7 +161,7 @@ html, body {
 			slineTo(x, y, new_x, new_y);
 		}
 		else {
-			n--;
+			--n;
 			
 			var xlen = (new_x - x) / 3;
 			var ylen = (new_y - y) / 3;
@@ -181,32 +183,68 @@ html, body {
 		
 		for(var i = 0; i < width; ++i) {
 			for(var j = 0; j < height; ++j) {
-				/*if(d[1 + (i * 600 + j) * 4] != 255)
-					console.log(d[1 + (i * 600 + j) * 4]);*/
 				if(d[1 + (i * width + j) * 4] != 255) {
-					count++;
+					++count;
 				}
 			}
 		}
 		
-		console.log(count, Math.log(count), Math.log(1/width))
-		console.log(- Math.log(count) / Math.log(1/width));
+		return (-Math.log(count) / Math.log(1/width));
+	}
+	
+	function updateMinkowskiDim() {
+		spMinkowskiDim.innerHTML = minkowskiDimension();
 	}
 
 
 	function triangleGUI() {
+		var n = prompt('Podaj liczbę zagnieżdżeń');
+		clearCanvas();
+		ctx.beginPath();
+		triangle(0, 1, 1, n);
+		ctx.stroke();
+		
+		updateMinkowskiDim();
 	}
 
 	function carpetGUI() {
+		var n = prompt('Podaj liczbę zagnieżdżeń');
+		clearCanvas();
+		ctx.beginPath();
+		carpet(0, 1, 0, 1, n);
+		ctx.stroke();
+		
+		updateMinkowskiDim();
 	}
 
 	function cantorGUI() {
+		var n = prompt('Podaj liczbę zagnieżdżeń');
+		clearCanvas();
+		ctx.beginPath();
+		cantor(0, 1, n, 1/3);
+		ctx.stroke();
+		
+		updateMinkowskiDim();
 	}
 
 	function genCantorGUI() {
+		var n = prompt('Podaj liczbę zagnieżdżeń');
+		clearCanvas();
+		ctx.beginPath();
+		cantor(0, 1, n, 0.1);
+		ctx.stroke();
+		
+		updateMinkowskiDim();
 	}
 
 	function kochGUI() {
+		var n = prompt('Podaj liczbę zagnieżdżeń');
+		clearCanvas();
+		ctx.beginPath();
+		koch(0, 0.98, 0, 1, n);
+		ctx.stroke();
+		
+		updateMinkowskiDim();
 	}
 
 
@@ -223,16 +261,6 @@ html, body {
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = 'red';
 		ctx.translate(-0.5, -0.5);
-		
-		ctx.beginPath();
-
-
-		//carpet(0, 1, 0, 1, 5);
-		//triangle(0, 1, 1, 7);
-		//cantor(0, 1, 9, 1/3);
-		koch(0, 0.98, 0, 1, 5);
-		ctx.stroke();
-		minkowskiDimension();
 	})();
 
 })();
